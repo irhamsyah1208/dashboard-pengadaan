@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         setLastUpdate();
         await initChartsFromAPI();
     }, 30000);
+    window.addEventListener('resize', () => {
+    if (window.donutChartInst) window.donutChartInst.resize();
+    if (window.barChartInst) window.barChartInst.resize();
+    if (window.ganttChartInst) window.ganttChartInst.resize();
+    if (window.vendorChartInst) window.vendorChartInst.resize();
+});
 });
 
 // =================== API CALLS ===================
@@ -146,7 +152,6 @@ function updateGanttChart() {
     const ctx = document.getElementById('ganttChart');
     if (!ctx) return;
     
-    // Cek data kosong
     if (!appData.paket || appData.paket.length === 0) {
         if (window.ganttChartInst) window.ganttChartInst.destroy();
         return;
@@ -157,6 +162,13 @@ function updateGanttChart() {
     const progress = topPaket.map(p => p.progress || 0);
     const remaining = topPaket.map(p => 100 - (p.progress || 0));
     
+    // Set tinggi container dinamis
+    const container = ctx.parentElement;
+    if (container) {
+        const height = Math.max(300, topPaket.length * 45 + 60);
+        container.style.height = height + 'px';
+    }
+    
     if (window.ganttChartInst) window.ganttChartInst.destroy();
     window.ganttChartInst = new Chart(ctx, {
         type: 'bar',
@@ -164,7 +176,16 @@ function updateGanttChart() {
             { label: 'Progress', data: progress, backgroundColor: '#4f7ef7', borderRadius: 4, barPercentage: 0.55 },
             { label: 'Sisa', data: remaining, backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 4, barPercentage: 0.55 }
         ] },
-        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { stacked: true, max: 100, ticks: { callback: v => v + '%' } }, y: { stacked: true, grid: { display: false } } } }
+        options: { 
+            indexAxis: 'y', 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { legend: { display: false } }, 
+            scales: { 
+                x: { stacked: true, max: 100, ticks: { callback: v => v + '%' } }, 
+                y: { stacked: true, grid: { display: false } } 
+            } 
+        }
     });
 }
 
