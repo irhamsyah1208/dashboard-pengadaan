@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python3", "sqlite"]
+
+[phases.install]
+cmds = [
+    "pip3 install pandas openpyxl",
+    "npm install"
+]
