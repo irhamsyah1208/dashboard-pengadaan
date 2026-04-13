@@ -255,7 +255,7 @@ app.post('/api/upload-excel', upload.single('file'), (req, res) => {
 
     console.log(`📂 Processing: ${filePath}`);
 
-    exec(`python "${scriptPath}" "${filePath}" "${dbArg}"`,
+    exec(`python3 "${scriptPath}" "${filePath}" "${dbArg}"`,
          { timeout: 120000 },
          (error, stdout, stderr) => {
              fs.unlink(filePath, ()=>{});
