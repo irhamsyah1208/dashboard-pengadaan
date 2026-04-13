@@ -17,8 +17,14 @@ const PORT = process.env.PORT || 3000;
 
 // --- Database Setup (better-sqlite3) ---
 const DB_PATH = process.env.DATABASE_PATH || path.join(__dirname, '..', 'pengadaan.db');
+
+// Pastikan folder database ada
+const dbDir = path.dirname(DB_PATH);
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+
 const db = new Database(DB_PATH, { verbose: console.log });
-console.log('✅ Connected to SQLite:', DB_PATH);
 
 // --- Middleware ---
 app.use(helmet({ contentSecurityPolicy: false }));
