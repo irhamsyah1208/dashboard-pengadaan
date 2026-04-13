@@ -43,8 +43,11 @@ def to_num(val):
 def to_int(val): return int(round(to_num(val)))
 
 def safe_col(col):
-    s = re.sub(r'[^a-zA-Z0-9_]','_',str(col).strip())
-    s = re.sub(r'_+',' ',s).strip().replace(' ','_').lower()
+    s = re.sub(r'[^a-zA-Z0-9_]', '_', str(col).strip())
+    s = re.sub(r'_+', ' ', s).strip().replace(' ', '_').lower()
+    # Jika diawali angka, tambahkan prefix 'col_'
+    if s and s[0].isdigit():
+        s = 'col_' + s
     return s or 'col'
 
 # --- Pattern definitions ---
