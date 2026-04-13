@@ -1,8 +1,9 @@
 [phases.setup]
-nixPkgs = ["python3", "sqlite"]
+nixPkgs = ["python312", "python312Packages.pip"]
 
 [phases.install]
 cmds = [
-    "pip3 install pandas openpyxl",
+    "python3.12 -m ensurepip",
+    "python3.12 -m pip install pandas openpyxl",
     "npm install"
 ]
