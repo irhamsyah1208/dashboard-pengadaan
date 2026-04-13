@@ -1,0 +1,10 @@
+node_modules/
+uploads/
+pengadaan.db
+pengadaan.db-*
+.env
+.env.local
+.DS_Store
+.vercel
+*.pyc
+__pycache__/

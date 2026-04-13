@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Monitoring Pengadaan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">P</div>
+      <span class="logo-text">Pengadaan</span>
+      <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard" onclick="showPage('dashboard'); return false">
+        <span class="nav-icon">📊</span>Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="paket" onclick="showPage('paket'); return false">
+        <span class="nav-icon">📦</span>Paket Pengadaan
+      </a>
+      <a href="#" class="nav-item" data-page="vendor" onclick="showPage('vendor'); return false">
+        <span class="nav-icon">🏢</span>Kinerja Vendor
+      </a>
+      <a href="#" class="nav-item" data-page="monitoring" onclick="showPage('monitoring'); return false">
+        <span class="nav-icon">⚠️</span>Monitoring
+      </a>
+      <a href="#" class="nav-item" data-page="integrasi" onclick="showPage('integrasi'); return false">
+        <span class="nav-icon">🔗</span>Integrasi
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-avatar">AD</div>
+      <div class="user-info">
+        <span class="user-name">Admin Dept</span>
+        <span class="user-role">Pengadaan</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="filters-row">
+          <div class="period-toggle">
+            <button class="ptbtn active" onclick="setPeriod(this,'Bulanan')">Bulanan</button>
+            <button class="ptbtn" onclick="setPeriod(this,'Tahunan')">Tahunan</button>
+          </div>
+          <select id="monthSelector" class="fsel" onchange="filterByMonth()" style="width:100px">
+            <option value="all">Semua Bulan</option>
+            <option value="Jan">Januari</option>
+            <option value="Feb">Februari</option>
+            <option value="Mar">Maret</option>
+            <option value="Apr">April</option>
+            <option value="Mei">Mei</option>
+            <option value="Jun">Juni</option>
+            <option value="Jul">Juli</option>
+            <option value="Agu">Agustus</option>
+            <option value="Sep">September</option>
+            <option value="Okt">Oktober</option>
+            <option value="Nov">November</option>
+            <option value="Des">Desember</option>
+          </select>
+          <select id="yearSelect" class="fsel" style="width:80px"></select>
+          <select class="fsel" id="filterUnit" onchange="applyFilters()">
+            <option value="">Semua Unit</option>
+            <option value="DEPT - IT">DEPT - IT</option>
+            <option value="DEPT - Keuangan">DEPT - Keuangan</option>
+            <option value="DEPT - Asset">DEPT - Asset</option>
+            <option value="DEPT - Teknologi">DEPT - Teknologi</option>
+            <option value="DEPT - SekPer">DEPT - SekPer</option>
+          </select>
+          <select class="fsel" id="filterJenis" onchange="applyFilters()">
+            <option value="">Semua Jenis</option>
+            <option value="Barang">Barang</option>
+            <option value="Jasa lainnya">Jasa lainnya</option>
+            <option value="Konstruksi">Konstruksi</option>
+            <option value="Jasa konsultasi">Jasa konsultasi</option>
+          </select>
+          <select class="fsel" id="filterStatus" onchange="applyFilters()">
+            <option value="">Semua Status</option>
+            <option value="Perencanaan">Perencanaan</option>
+            <option value="Proses Tender">Proses Tender</option>
+            <option value="On Track">On Track</option>
+            <option value="Risiko">Risiko</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Terlambat">Terlambat</option>
+          </select>
+          <button class="btn-export" onclick="showImportModal()">📥 Import</button>
+          <button class="btn-export" onclick="showExportModal()">📤 Export</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ALERTS BANNER -->
+    <div class="alert-banner" id="alertBanner">
+      <div class="alert-ticker" id="alertTicker"></div>
+      <button onclick="document.getElementById('alertBanner').style.display='none'">✕</button>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboardPage">
+      <section class="kpi-section">
+        <div class="kpi-card">
+          <div class="kpi-top"><span class="kpi-ico">📦</span></div>
+          <div class="kpi-val" id="kpiTotal">0</div>
+          <div class="kpi-lbl">Total Paket</div>
+          <div class="kpi-bar">
+            <div style="width:100%;background:#4f7ef7"></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top"><span class="kpi-ico">⏳</span></div>
+          <div class="kpi-val info" id="kpiProses">0</div>
+          <div class="kpi-lbl">Dalam Proses</div>
+          <div class="kpi-bar">
+            <div style="width:44%;background:#4f7ef7"></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top"><span class="kpi-ico">✅</span></div>
+          <div class="kpi-val success" id="kpiSelesai">0</div>
+          <div class="kpi-lbl">Selesai</div>
+          <div class="kpi-bar">
+            <div style="width:40%;background:#22c97a"></div>
+          </div>
+        </div>
+        <div class="kpi-card danger-card">
+          <div class="kpi-top"><span class="kpi-ico">❌</span></div>
+          <div class="kpi-val danger" id="kpiTerlambat">0</div>
+          <div class="kpi-lbl">Terlambat</div>
+          <div class="kpi-bar">
+            <div style="width:17%;background:#f74f4f"></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top"><span class="kpi-ico">💰</span></div>
+          <div class="kpi-val" id="kpiNilai">Rp 0</div>
+          <div class="kpi-lbl">Total Nilai</div>
+          <div class="kpi-bar">
+            <div style="width:68%;background:#f7a74f"></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top"><span class="kpi-ico">📊</span></div>
+          <div class="kpi-val success" id="kpiOnTime">0%</div>
+          <div class="kpi-lbl">On-Time Delivery</div>
+          <div class="kpi-bar">
+            <div style="width:79%;background:#22c97a"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="charts-row">
+        <div class="chart-box">
+          <div class="chart-header"><span class="chart-title">Distribusi Status Pengadaan</span><button
+              class="chart-btn" onclick="downloadChartImage('donutChart')">⬇ PNG</button></div>
+          <div class="legend-wrap" id="donutLegend"></div>
+          <div class="chart-canvas-wrap" style="height:220px"><canvas id="donutChart"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-header"><span class="chart-title">Nilai Pengadaan per Bulan (Miliar Rp)</span><button
+              class="chart-btn" onclick="downloadChartImage('barChart')">⬇ PNG</button></div>
+          <div class="legend-wrap" id="barLegend"></div>
+          <div class="chart-canvas-wrap" style="height:220px"><canvas id="barChart"></canvas></div>
+        </div>
+      </section>
+
+      <section class="section-box">
+        <div class="chart-header"><span class="chart-title">Timeline &amp; Progress Pengadaan</span><button
+            class="chart-btn" onclick="downloadChartImage('ganttChart')">⬇ PNG</button></div>
+        <div class="chart-canvas-wrap" style="height:360px"><canvas id="ganttChart"></canvas></div>
+      </section>
+
+      <section class="two-col-row">
+        <div class="section-box">
+          <div class="chart-header"><span class="chart-title">Kinerja Vendor</span><button class="chart-btn"
+              onclick="exportVendorCSV()">⬇ CSV</button></div>
+          <div class="chart-canvas-wrap" style="height:200px"><canvas id="vendorChart"></canvas></div>
+          <div class="table-wrap">
+            <table id="vendorTable">
+              <thead>
+                <tr>
+                  <th>Vendor</th>
+                  <th>Kontrak</th>
+                  <th>Tepat Waktu</th>
+                  <th>Kualitas</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody id="vendorBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="section-box">
+          <div class="chart-header"><span class="chart-title">Top 5 Paket</span></div>
+          <div id="topPaketList" class="top-list"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PAKET PAGE -->
+    <div id="paketPage" style="display:none">
+      <section class="section-box" style="margin:20px">
+        <div class="chart-header"><span class="chart-title">📦 Semua Paket</span><input class="search-input" type="text"
+            placeholder="Cari..." oninput="filterPaketPage(this.value)" /></div>
+        <div class="table-wrap">
+          <table id="paketTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nama Paket</th>
+                <th>Unit</th>
+                <th>Jenis</th>
+                <th>PIC</th>
+                <th>Target</th>
+                <th>Progress</th>
+                <th>Status</th>
+                <th>Nilai</th>
+              </tr>
+            </thead>
+            <tbody id="paketTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- VENDOR PAGE -->
+    <div id="vendorPage" style="display:none">
+      <section class="section-box" style="margin:20px">
+        <div class="chart-header"><span class="chart-title">🏢 Semua Vendor</span></div>
+        <div class="table-wrap">
+          <table id="allVendorTable">
+            <thead>
+              <tr>
+                <th>Vendor</th>
+                <th>Kontrak</th>
+                <th>Tepat Waktu</th>
+                <th>Kualitas</th>
+                <th>Rating</th>
+              </tr>
+            </thead>
+            <tbody id="allVendorBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- MONITORING PAGE -->
+    <div id="monitoringPage" style="display:none">
+      <section class="section-box" style="margin:20px">
+        <div class="chart-header"><span class="chart-title">⚠️ Paket Terlambat & Berisiko</span><input
+            class="search-input" type="text" placeholder="Cari..." oninput="filterMonitoringPage(this.value)" /></div>
+        <div class="table-wrap">
+          <table id="monitoringTable">
+            <thead>
+              <tr>
+                <th>Nama Paket</th>
+                <th>Unit</th>
+                <th>Status</th>
+                <th>Target</th>
+                <th>Progress</th>
+                <th>Risiko</th>
+                <th>Keterangan</th>
+              </tr>
+            </thead>
+            <tbody id="monitoringBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- INTEGRASI PAGE -->
+    <div id="integrasiPage" style="display:none">
+      <section class="section-box" style="margin:20px">
+        <div class="chart-header"><span class="chart-title">🔗 API Endpoints</span></div>
+        <div class="api-panel">
+          <div class="api-endpoints">
+            <div class="api-row"><span class="api-method get">GET</span><code>/api/v1/pengadaan/summary</code><button
+                class="api-copy" onclick="copyText('/api/v1/pengadaan/summary')">copy</button></div>
+            <div class="api-row"><span class="api-method get">GET</span><code>/api/v1/pengadaan/paket</code><button
+                class="api-copy" onclick="copyText('/api/v1/pengadaan/paket')">copy</button></div>
+            <div class="api-row"><span class="api-method get">GET</span><code>/api/v1/pengadaan/vendor</code><button
+                class="api-copy" onclick="copyText('/api/v1/pengadaan/vendor')">copy</button></div>
+            <div class="api-row"><span class="api-method get">GET</span><code>/api/v1/pengadaan/nilai</code><button
+                class="api-copy" onclick="copyText('/api/v1/pengadaan/nilai')">copy</button></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="dash-footer"><span>Terakhir diperbarui: <strong id="lastUpdate"></strong></span><span>Data dari
+        SQLite</span><span id="refreshCountdown">Auto-refresh: 30s</span></footer>
+  </main>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="importModal">
+    <div class="modal" style="max-width:600px;width:90%">
+      <div class="modal-header">📥 Import Excel / CSV<button class="modal-close" onclick="closeModal('importModal')">✕</button></div>
+      <div class="modal-body">
+        <!-- Drop zone -->
+        <div class="import-upload" style="border:2px dashed rgba(79,126,247,0.4);border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:4px">
+          <div style="font-size:32px;margin-bottom:8px">📂</div>
+          <p style="margin:0 0 4px;font-weight:500">Drag &amp; drop file di sini</p>
+          <p style="margin:0;font-size:12px;color:var(--text3,#8b92a8)">atau klik untuk pilih file (.xlsx, .xls, .csv)</p>
+        </div>
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleFileSelect(event)" />
+        <!-- Status message -->
+        <div id="importMessage" style="display:none"></div>
+        <!-- Preview table -->
+        <div id="importPreview" style="display:none;margin-top:12px;max-height:220px;overflow-y:auto;border-radius:6px;border:1px solid rgba(255,255,255,0.07)"></div>
+        <!-- Actions -->
+        <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+          <button class="btn-export" onclick="closeModal('importModal')">Batal</button>
+          <button class="btn-export" id="importBtn" onclick="processImport()" style="display:none;background:var(--blue,#4f7ef7);color:#fff">🚀 Import ke Dashboard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="exportModal">
+    <div class="modal">
+      <div class="modal-header">Export<button class="modal-close" onclick="closeModal('exportModal')">✕</button></div>
+      <div class="modal-body">
+        <div class="export-opts"><button class="export-opt-btn"
+            onclick="exportXLSX()"><span>📗</span>Excel</button><button class="export-opt-btn"
+            onclick="exportCSVAll()"><span>📄</span>CSV</button><button class="export-opt-btn"
+            onclick="exportJSON()"><span>{ }</span>JSON</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
