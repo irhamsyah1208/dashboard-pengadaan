@@ -103,11 +103,30 @@ function showToast(msg) {
 
 // =================== ALERT BANNER ===================
 function updateAlertBanner() {
-    const terlambat = appData.paket.filter(p => p.status === 'Terlambat').length;
+    const terlambatPaket = appData.paket.filter(p => p.status === 'Terlambat');
+    const terlambat = terlambatPaket.length;
     const banner = document.getElementById('alertBanner');
     const ticker = document.getElementById('alertTicker');
-    if (ticker) ticker.textContent = terlambat > 0 ? `❗ ${terlambat} paket terlambat` : '✅ Semua paket on track';
-    if (banner && terlambat > 0) banner.style.display = 'flex';
+    
+    if (ticker) {
+        if (terlambat > 0) {
+            const namaPaket = terlambatPaket.slice(0, 3).map(p => p.nama).join(', ');
+            const lebih = terlambat > 3 ? ` dan ${terlambat - 3} lainnya` : '';
+            ticker.textContent = `❗ ${terlambat} paket terlambat: ${namaPaket}${lebih}`;
+            
+            // Bikin banner bisa di-klik untuk pindah ke halaman monitoring
+            banner.style.cursor = 'pointer';
+            banner.onclick = () => showPage('monitoring');
+        } else {
+            ticker.textContent = '✅ Semua paket on track';
+            banner.style.cursor = 'default';
+            banner.onclick = null;
+        }
+    }
+    
+    if (banner) {
+        banner.style.display = terlambat > 0 ? 'flex' : 'none';
+    }
 }
 
 function initAlertBanner() { updateAlertBanner(); }
