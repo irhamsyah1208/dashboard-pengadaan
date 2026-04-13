@@ -241,3 +241,130 @@ tr:hover td { background: var(--bg3); }
   .topbar { height: auto; padding: 10px 14px; }
   .filters-row { gap: 6px; }
 }
+
+/* ===== MOBILE SMALL (max-width: 480px) ===== */
+@media (max-width: 480px) {
+  .kpi-section {
+    grid-template-columns: 1fr;
+    padding: 12px 10px;
+  }
+  
+  .kpi-val {
+    font-size: 1.5rem;
+  }
+  
+  .kpi-card {
+    padding: 12px;
+  }
+  
+  .topbar {
+    padding: 8px 10px;
+  }
+  
+  .topbar-right {
+    width: 100%;
+  }
+  
+  .filters-row {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .period-toggle {
+    width: 100%;
+  }
+  
+  .ptbtn {
+    flex: 1;
+    text-align: center;
+    padding: 6px 8px;
+  }
+  
+  .fsel {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+  
+  #monthSelector, #yearSelect {
+    width: auto !important;
+    flex: 1;
+  }
+  
+  .btn-export {
+    padding: 6px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  
+  .charts-row {
+    padding: 0 10px;
+  }
+  
+  .chart-box, .section-box {
+    padding: 12px;
+    margin: 8px 10px 0;
+  }
+  
+  .chart-canvas-wrap {
+    height: 180px !important;
+  }
+  
+  .table-wrap {
+    font-size: 10px;
+  }
+  
+  th, td {
+    padding: 6px 4px;
+    font-size: 10px;
+  }
+  
+  .prog-bar {
+    width: 50px;
+  }
+  
+  .sidebar {
+    width: 100%;
+    max-width: 260px;
+  }
+  
+  .modal {
+    width: 95vw;
+    max-width: 95vw;
+  }
+  
+  .modal-header {
+    padding: 14px 16px;
+  }
+  
+  .modal-body {
+    padding: 14px;
+  }
+  
+  .import-upload {
+    padding: 20px 10px;
+  }
+  
+  .dash-footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    margin: 12px 10px;
+  }
+  
+  .toast {
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    text-align: center;
+  }
+  
+  .top-item {
+    padding: 10px;
+  }
+  
+  .top-item-name {
+    font-size: 12px;
+  }
+}
