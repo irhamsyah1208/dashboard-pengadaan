@@ -110,17 +110,12 @@ function updateAlertBanner() {
     
     if (ticker) {
         if (terlambat > 0) {
+            // Ambil maksimal 3 nama paket terlambat
             const namaPaket = terlambatPaket.slice(0, 3).map(p => p.nama).join(', ');
             const lebih = terlambat > 3 ? ` dan ${terlambat - 3} lainnya` : '';
             ticker.textContent = `❗ ${terlambat} paket terlambat: ${namaPaket}${lebih}`;
-            
-            // Bikin banner bisa di-klik untuk pindah ke halaman monitoring
-            banner.style.cursor = 'pointer';
-            banner.onclick = () => showPage('monitoring');
         } else {
             ticker.textContent = '✅ Semua paket on track';
-            banner.style.cursor = 'default';
-            banner.onclick = null;
         }
     }
     
@@ -129,7 +124,9 @@ function updateAlertBanner() {
     }
 }
 
-function initAlertBanner() { updateAlertBanner(); }
+function initAlertBanner() { 
+    updateAlertBanner(); 
+}
 
 // =================== CHARTS ===================
 async function initChartsFromAPI() {
